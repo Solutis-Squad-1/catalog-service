@@ -6,6 +6,8 @@ import br.com.solutis.squad1.catalogservice.model.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.Set;
+
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
@@ -16,4 +18,7 @@ public interface CategoryMapper {
 
     @Mapping(target = "id", ignore = true)
     Category dtoToEntity(CategoryDto categoryDto);
+
+    @Mapping(target = "id", ignore = true)
+    Set<CategoryResponseDto> toResponseDto(Set<Category> categories);
 }

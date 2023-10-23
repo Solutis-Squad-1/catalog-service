@@ -19,4 +19,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "SELECT c FROM Category c WHERE c.id IN :ids AND c.deleted = false"
     )
     Set<Category> findAllByListOfIdAndDeletedFalse(List<Long> ids);
+
+    Category findIdByName(String category);
 }

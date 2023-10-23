@@ -75,17 +75,16 @@ public class Product {
 
         if (product.getPrice() != null) setPrice(product.getPrice());
 
-        if (product.categories != null && !product.categories.isEmpty()) {
-            setCategories(null);
-            setCategories(product.getCategories());
-        }
-
         if (product.getImage() != null) setImage(product.getImage());
     }
 
     public void delete() {
         deleted = true;
         deletedAt = LocalDateTime.now();
+    }
+
+    public void deleteCategories() {
+        categories = null;
     }
 
     @Override

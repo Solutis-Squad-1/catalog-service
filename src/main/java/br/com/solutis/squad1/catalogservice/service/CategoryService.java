@@ -35,10 +35,6 @@ public class CategoryService {
         return mapper.toResponseDto(category);
     }
 
-    public Set<Category> findByListOfId(List<Long> ids) {
-        return categoryRepository.findAllByListOfIdAndDeletedFalse(ids);
-    }
-
     public CategoryResponseDto save(CategoryDto categoryDto) {
         Category category = mapper.dtoToEntity(categoryDto);
         category = categoryRepository.save(category);

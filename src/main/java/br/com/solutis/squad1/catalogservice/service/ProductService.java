@@ -1,5 +1,6 @@
 package br.com.solutis.squad1.catalogservice.service;
 
+import br.com.solutis.squad1.catalogservice.dto.category.CategoryResponseDto;
 import br.com.solutis.squad1.catalogservice.dto.product.ProductPostDto;
 import br.com.solutis.squad1.catalogservice.dto.product.ProductPutDto;
 import br.com.solutis.squad1.catalogservice.dto.product.ProductResponseDto;
@@ -9,6 +10,7 @@ import br.com.solutis.squad1.catalogservice.mapper.ProductMapper;
 import br.com.solutis.squad1.catalogservice.model.entity.Category;
 import br.com.solutis.squad1.catalogservice.model.entity.Image;
 import br.com.solutis.squad1.catalogservice.model.entity.Product;
+import br.com.solutis.squad1.catalogservice.model.repository.CategoryRepository;
 import br.com.solutis.squad1.catalogservice.model.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,22 +20,50 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final ProductMapper mapper;
     private final CategoryMapper categoryMapper;
 
-    public Page<ProductResponseDto> findAll(String category, Pageable pageable) {
-        if (category == null) {
-            return productRepository.findAllByDeletedFalseWithCategories(pageable).map(mapper::toResponseDto);
+    public Page<ProductResponseDto> findAll(String categoryName, Pageable pageable) {
+        if (categoryName == null) {
+            Page<Product> products = productRepository.findAllByDeletedFalse(pageable);
+            productRepository.findProductCategories(products.getContent());
+            return products.map(mapper::toResponseDto);
         }
 
-        return productRepository.findAllByCategoryAndDeletedFalse(category, pageable).map(mapper::toResponseDto);
+        Category category = categoryRepository.findIdByName(categoryName);
+        if (category == null) {
+            throw new EntityNotFoundException("Category not found");
+        }
+
+        Page<Product> products = productRepository.findAllByCategoryIdAndDeletedFalse(category.getId(), pageable);
+        productRepository.findProductCategories(products.getContent());
+        return products.map(mapper::toResponseDto);
+    }
+
+    public Page<ProductResponseDto> findBySellerId(Long id, String categoryName, Pageable pageable) {
+        if (categoryName == null) {
+            Page<Product> products = productRepository.findAllBySellerIdAndDeletedFalse(id, pageable);
+            productRepository.findProductCategories(products.getContent());
+            return products.map(mapper::toResponseDto);
+        }
+
+        Category category = categoryRepository.findIdByName(categoryName);
+        if (category == null) {
+            throw new EntityNotFoundException("Category not found");
+        }
+
+        Page<Product> products = productRepository
+                .findAllBySellerIdAndCategoryIdAndDeletedFalse(id, category.getId(), pageable);
+        productRepository.findProductCategories(products.getContent());
+        return products.map(mapper::toResponseDto);
     }
 
     public ProductResponseDto findById(Long id) {
@@ -41,15 +71,6 @@ public class ProductService {
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
         return mapper.toResponseDto(product);
-    }
-
-    public Page<ProductResponseDto> findBySellerId(Long id, String category, Pageable pageable) {
-        if (category == null) {
-            return productRepository.findAllBySellerIdAndDeletedFalse(id, pageable).map(mapper::toResponseDto);
-        }
-
-        return productRepository
-                .findAllBySellerIdAndCategoryAndDeletedFalse(id, category, pageable).map(mapper::toResponseDto);
     }
 
     public ProductResponseDto save(ProductPostDto productPostDto) {
@@ -61,12 +82,13 @@ public class ProductService {
         if (categories.isEmpty()) {
             throw new EntityNotFoundException("Category not found");
         }
-
-        product.setCategories(categories);
+        Set<Long> categoriesIds = categories.stream().map(Category::getId).collect(Collectors.toSet());
 
         product = productRepository.save(product);
+        productRepository.saveAllCategories(product.getId(), categoriesIds);
 
-        return mapper.toResponseDto(product);
+        Set<CategoryResponseDto> categoriesResponse = categoryMapper.toResponseDto(categories);
+        return new ProductResponseDto(product, categoriesResponse);
     }
 
     public ProductResponseDto update(Long id, ProductPutDto productPutDto) {
@@ -80,11 +102,15 @@ public class ProductService {
         if (categories.isEmpty()) {
             throw new EntityNotFoundException("Category not found");
         }
-
-        newProduct.setCategories(categories);
+        Set<Long> categoriesIds = categories.stream().map(Category::getId).collect(Collectors.toSet());
 
         product.update(newProduct);
-        return mapper.toResponseDto(product);
+        product.deleteCategories();
+
+        productRepository.saveAllCategories(product.getId(), categoriesIds);
+
+        Set<CategoryResponseDto> categoriesResponse = categoryMapper.toResponseDto(categories);
+        return new ProductResponseDto(product, categoriesResponse);
     }
 
     public void delete(Long id) {
@@ -103,6 +129,6 @@ public class ProductService {
     }
 
     private Set<Category> getCategories(List<Long> ids) {
-        return categoryService.findByListOfId(ids);
+        return categoryRepository.findAllByListOfIdAndDeletedFalse(ids);
     }
 }
