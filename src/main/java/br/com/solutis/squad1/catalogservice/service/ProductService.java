@@ -38,7 +38,7 @@ public class ProductService {
             return products.map(mapper::toResponseDto);
         }
 
-        Category category = categoryRepository.findIdByName(categoryName);
+        Category category = categoryRepository.findByName(categoryName);
         if (category == null) {
             throw new EntityNotFoundException("Category not found");
         }
@@ -55,7 +55,7 @@ public class ProductService {
             return products.map(mapper::toResponseDto);
         }
 
-        Category category = categoryRepository.findIdByName(categoryName);
+        Category category = categoryRepository.findByName(categoryName);
         if (category == null) {
             throw new EntityNotFoundException("Category not found");
         }

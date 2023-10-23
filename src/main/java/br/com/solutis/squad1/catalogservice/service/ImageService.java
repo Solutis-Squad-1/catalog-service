@@ -23,6 +23,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -105,15 +109,21 @@ public class ImageService {
         }
 
         // Upload da imagem
-        String newFileName = productId + Objects.requireNonNull(
-                file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf('.')
-        );
+        String newFileName = generateNewFilename(productId, file);
         store(file, newFileName);
 
         // Coloca os dados da imagem que foi feito o upload no objeto para retornar
         Image image = getProductImageFromFile(file, newFileName);
 
         return mapper.toResponseDto(image);
+    }
+
+    private static String generateNewFilename(Long productId, MultipartFile file) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String formattedDate = LocalDateTime.now().format(formatter);
+        return productId + "-" + formattedDate + Objects.requireNonNull(
+                file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf('.')
+        );
     }
 
     private Image getProductImageFromFile(MultipartFile file, String newFileName) {

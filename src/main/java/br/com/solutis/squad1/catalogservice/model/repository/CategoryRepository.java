@@ -20,5 +20,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     )
     Set<Category> findAllByListOfIdAndDeletedFalse(List<Long> ids);
 
-    Category findIdByName(String category);
+    Category findByName(String category);
 }
