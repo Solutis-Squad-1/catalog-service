@@ -221,4 +221,15 @@ public class ProductService {
             throw e;
         }
     }
+
+    public Page<ProductResponseDto> findProductsByName(String name, Pageable pageable) {
+        try{
+            LOGGER.info("Searching for products by name containing: {}", name);
+            Page<Product> products = productRepository.findProductsByName(name, pageable);
+            return products.map(mapper::toResponseDto);
+        } catch (Exception e){
+            LOGGER.error("Error while deleting product");
+            throw e;
+        }
+    }
 }

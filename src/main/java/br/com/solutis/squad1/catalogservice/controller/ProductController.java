@@ -41,6 +41,14 @@ public class ProductController {
         return productService.findById(id);
     }
 
+    @GetMapping("/search")
+    public Page<ProductResponseDto> findProductsByName(
+            @RequestParam String name,
+            Pageable pageable
+    ){
+        return productService.findProductsByName(name, pageable);
+    }
+
     @GetMapping("/sellers/{id}")
     public Page<ProductResponseDto> findBySellerId(
             @PathVariable Long id,

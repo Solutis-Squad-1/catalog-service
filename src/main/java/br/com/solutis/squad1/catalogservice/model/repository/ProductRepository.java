@@ -1,5 +1,6 @@
 package br.com.solutis.squad1.catalogservice.model.repository;
 
+import br.com.solutis.squad1.catalogservice.dto.product.ProductResponseDto;
 import br.com.solutis.squad1.catalogservice.model.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,4 +51,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     )
     void saveAllCategories(@Param("productId") Long productId, @Param("categoryIds") Set<Long> categoryIds);
 
+    @Query(
+            "SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))"
+    )
+    Page<Product> findProductsByName(String name, Pageable pageable);
 }
