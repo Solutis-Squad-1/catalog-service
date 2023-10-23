@@ -1,5 +1,7 @@
 package br.com.solutis.squad1.catalogservice.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalErrorHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalErrorHandler.class);
     private static List<ErrorType> getErrors(List<FieldError> fieldErrors) {
         return fieldErrors
                 .stream()
@@ -23,6 +26,7 @@ public class GlobalErrorHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionResponse handleEntityNotFoundException(EntityNotFoundException exception) {
+        LOGGER.error("Entity not found", exception);
         return new ExceptionResponse(
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
                 HttpStatus.NOT_FOUND.value(),
@@ -34,6 +38,7 @@ public class GlobalErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        LOGGER.error("Method argument not valid", exception);
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         List<ErrorType> errors = getErrors(fieldErrors);
 
@@ -48,6 +53,7 @@ public class GlobalErrorHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        LOGGER.error("Http message not readable", ex);
         return new ExceptionResponse(
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -59,6 +65,7 @@ public class GlobalErrorHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleException(Exception ex) {
+        LOGGER.error("Internal server error", ex);
         return new ExceptionResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),

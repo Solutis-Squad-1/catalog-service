@@ -10,14 +10,14 @@ public record ImageResponseDto(
         Long size,
         String url
 ) {
-        public ImageResponseDto(Image image) {
-                this(
-                        image.getId(),
-                        image.getArchiveName(),
-                        image.getOriginalName(),
-                        image.getContentType(),
-                        image.getSize(),
-                        image.getUrl()
-                );
-        }
+    public ImageResponseDto(Image image) {
+        this(
+                image.getId(),
+                image.getArchiveName(),
+                image.getOriginalName(),
+                image.getContentType(),
+                image.getSize(),
+                image.getUrl()
+        );
+    }
 }

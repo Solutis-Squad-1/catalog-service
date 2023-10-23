@@ -1,6 +1,5 @@
 package br.com.solutis.squad1.catalogservice.model.repository;
 
-import br.com.solutis.squad1.catalogservice.model.entity.Category;
 import br.com.solutis.squad1.catalogservice.model.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
