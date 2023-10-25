@@ -19,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -73,6 +76,11 @@ public class ProductController {
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.parseMediaType(contentType).toString());
 
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/cart")
+    public List<ProductResponseDto> findProductsByUser(@RequestBody List<Long> productsId){
+        return productService.findProductsList (productsId);
     }
 
     @PostMapping

@@ -232,4 +232,19 @@ public class ProductService {
             throw e;
         }
     }
+
+    public List<ProductResponseDto> findProductsList(List<Long> productsId) {
+        try{
+            List<Product> products = productRepository.findAllById(productsId);
+
+            List<ProductResponseDto> productsDto = products.stream()
+                    .map(mapper::toResponseDto)
+                    .collect(Collectors.toList());
+
+            return productsDto;
+        }catch (Exception e){
+            LOGGER.error("Error while finding product");
+            throw e;
+        }
+    }
 }
