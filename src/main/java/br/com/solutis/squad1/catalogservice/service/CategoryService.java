@@ -23,65 +23,37 @@ public class CategoryService {
     private final CategoryMapper mapper;
 
     public Page<CategoryResponseDto> findAll(Pageable pageable) {
-        try {
-            LOGGER.info("Find all categories");
-            return categoryRepository.findAllByDeletedFalse(pageable)
-                    .map(mapper::toResponseDto);
-        } catch (Exception e) {
-            LOGGER.error("Error while finding categories");
-            throw e;
-        }
+        LOGGER.info("Find all categories");
+        return categoryRepository.findAllByDeletedFalse(pageable)
+                .map(mapper::toResponseDto);
     }
 
     public CategoryResponseDto findById(Long id) {
-        try {
-            LOGGER.info("Find category by id {}", id);
-            Category category = categoryRepository.findByIdAndDeletedIsFalse(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+        LOGGER.info("Find category by id {}", id);
+        Category category = categoryRepository.findByIdAndDeletedIsFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
-            return mapper.toResponseDto(category);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Category not found");
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("Error while finding category");
-            throw e;
-        }
+        return mapper.toResponseDto(category);
     }
 
     public CategoryResponseDto save(CategoryDto categoryDto) {
-        try {
-            LOGGER.info("Saving category {}", categoryDto);
-            Category category = mapper.dtoToEntity(categoryDto);
-            category = categoryRepository.save(category);
+        LOGGER.info("Saving category {}", categoryDto);
+        Category category = mapper.dtoToEntity(categoryDto);
+        category = categoryRepository.save(category);
 
-            return mapper.toResponseDto(category);
-        } catch (Exception e) {
-            LOGGER.error("Error while saving category");
-            throw e;
-        }
+        return mapper.toResponseDto(category);
     }
 
     public CategoryResponseDto update(Long id, CategoryDto categoryDto) {
-        try {
-            LOGGER.info("Updating category with id {}", id);
-            Category category = categoryRepository.getReferenceById(id);
-            category.update(mapper.dtoToEntity(categoryDto));
-            return mapper.toResponseDto(category);
-        } catch (Exception e) {
-            LOGGER.error("Error while updating category");
-            throw e;
-        }
+        LOGGER.info("Updating category with id {}", id);
+        Category category = categoryRepository.getReferenceById(id);
+        category.update(mapper.dtoToEntity(categoryDto));
+        return mapper.toResponseDto(category);
     }
 
     public void delete(Long id) {
-        try {
-            LOGGER.info("Deleting category with id {}", id);
-            Category category = categoryRepository.getReferenceById(id);
-            category.delete();
-        } catch (Exception e) {
-            LOGGER.error("Error while deleting category");
-            throw e;
-        }
+        LOGGER.info("Deleting category with id {}", id);
+        Category category = categoryRepository.getReferenceById(id);
+        category.delete();
     }
 }

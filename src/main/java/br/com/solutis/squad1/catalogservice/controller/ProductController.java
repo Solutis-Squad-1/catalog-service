@@ -80,7 +80,7 @@ public class ProductController {
 
     @GetMapping("/cart")
     public List<ProductResponseDto> findProductsByUser(@RequestBody List<Long> productsId){
-        return productService.findProductsList (productsId);
+        return productService.findProductsList(productsId);
     }
 
     @PostMapping

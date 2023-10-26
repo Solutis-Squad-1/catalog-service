@@ -46,75 +46,52 @@ public class ImageService {
     private String uploadUrl;
 
     private static String generateNewFilename(Long productId, MultipartFile file) {
-        try {
-            LOGGER.info("Generating new file name for product {}", productId);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
-            String formattedDate = LocalDateTime.now().format(formatter);
-            return productId + "-" + formattedDate + Objects.requireNonNull(
-                    file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf('.')
-            );
-        } catch (Exception e) {
-            LOGGER.error("An error occurred while generating the file name", e);
-            throw new ImageException("An error occurred while generating the file name");
-        }
+        LOGGER.info("Generating new file name for product {}", productId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String formattedDate = LocalDateTime.now().format(formatter);
+        return productId + "-" + formattedDate + Objects.requireNonNull(
+                file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf('.')
+        );
     }
 
     public ImageResponseDto findByProductId(Long id) {
-        try {
-            LOGGER.info("Finding image by product id {}", id);
-            Image image = imageRepository.findByProductIdAndDeletedIsFalse(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Product Image not found"));
-            return mapper.toResponseDto(image);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Product Image not found", e);
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("An error occurred while finding the product image", e);
-            throw new ImageException("An error occurred while finding the product image");
-        }
+        LOGGER.info("Finding image by product id {}", id);
+        Image image = imageRepository.findByProductIdAndDeletedIsFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product Image not found"));
+        return mapper.toResponseDto(image);
     }
 
     public ImageResponseDto save(Long productId, MultipartFile file) {
-        try {
-            LOGGER.info("Saving product image with {}", productId);
-            // Se tiver, deleta a imagem antiga do produto
-            Optional<Image> image = imageRepository.findByProductIdAndDeletedIsFalse(productId);
-            if (image.isPresent()) {
-                LOGGER.info("Deleting old product image");
-                delete(productId);
-                LOGGER.info("Old product image deleted");
-            }
-
-            LOGGER.info("Uploading product image");
-            ImageResponseDto productImage = upload(productId, file);
-            LOGGER.info("Product image uploaded");
-
-            LOGGER.info("Product image saved");
-            Image savedImage = imageRepository.save(mapper.responseDtoToEntity(productImage));
-            productService.saveImage(productId, savedImage);
-            return mapper.toResponseDto(savedImage);
-        } catch (Exception e) {
-            LOGGER.error("An error occurred while saving the product image", e);
-            throw new ImageException("An error occurred while saving the product image");
+        LOGGER.info("Saving product image with {}", productId);
+        // Se tiver, deleta a imagem antiga do produto
+        Optional<Image> image = imageRepository.findByProductIdAndDeletedIsFalse(productId);
+        if (image.isPresent()) {
+            LOGGER.info("Deleting old product image");
+            delete(productId);
+            LOGGER.info("Old product image deleted");
         }
+
+        LOGGER.info("Uploading product image");
+        ImageResponseDto productImage = upload(productId, file);
+        LOGGER.info("Product image uploaded");
+
+        LOGGER.info("Product image saved");
+        Image savedImage = imageRepository.save(mapper.responseDtoToEntity(productImage));
+        productService.saveImage(productId, savedImage);
+        return mapper.toResponseDto(savedImage);
     }
 
     public void delete(Long productId) {
-        try {
-            LOGGER.info("Deleting product image with id {}", productId);
-            ImageResponseDto imageResponseDto = findByProductId(productId);
-            Image image = imageRepository.getReferenceById(imageResponseDto.id());
-            image.delete();
+        LOGGER.info("Deleting product image with id {}", productId);
+        ImageResponseDto imageResponseDto = findByProductId(productId);
+        Image image = imageRepository.getReferenceById(imageResponseDto.id());
+        image.delete();
 
-            LOGGER.info("Deleting product image from product");
-            productService.deleteImage(productId);
+        LOGGER.info("Deleting product image from product");
+        productService.deleteImage(productId);
 
-            LOGGER.info("Deleting product image from directory");
-            deleteFile(imageResponseDto.archiveName());
-        } catch (Exception e) {
-            LOGGER.error("An error occurred while deleting the product image", e);
-            throw new ImageException("An error occurred while deleting the product image");
-        }
+        LOGGER.info("Deleting product image from directory");
+        deleteFile(imageResponseDto.archiveName());
     }
 
     public Resource load(String name) {
@@ -133,36 +110,25 @@ public class ImageService {
         } catch (MalformedURLException e) {
             LOGGER.error("An error occurred while loading the file", e);
             throw new RuntimeException("An error occurred while loading the file", e);
-        } catch (Exception e) {
-            LOGGER.error("An error occurred while loading the file", e);
-            throw e;
         }
     }
 
     private ImageResponseDto upload(Long productId, MultipartFile file) {
-        try {
-            LOGGER.info("Uploading file with id {}", productId);
-            // Valida se o arquivo é uma imagem
-            if (!Objects.requireNonNull(file.getContentType()).startsWith("image/")) {
-                throw new ImageException("File must be an image");
-            }
-
-            LOGGER.info("Uploading product image from product");
-            // Upload da imagem
-            String newFileName = generateNewFilename(productId, file);
-            store(file, newFileName);
-
-            LOGGER.info("Saving product image from directory");
-            // Coloca os dados da imagem que foi feito o upload no objeto para retornar
-            Image image = getProductImageFromFile(file, newFileName);
-            return mapper.toResponseDto(image);
-        } catch (ImageException e) {
-            LOGGER.error("File must be an image", e);
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("An error occurred while uploading the file", e);
-            throw new ImageException("An error occurred while uploading the file");
+        LOGGER.info("Uploading file with id {}", productId);
+        // Valida se o arquivo é uma imagem
+        if (!Objects.requireNonNull(file.getContentType()).startsWith("image/")) {
+            throw new ImageException("File must be an image");
         }
+
+        LOGGER.info("Uploading product image from product");
+        // Upload da imagem
+        String newFileName = generateNewFilename(productId, file);
+        store(file, newFileName);
+
+        LOGGER.info("Saving product image from directory");
+        // Coloca os dados da imagem que foi feito o upload no objeto para retornar
+        Image image = getProductImageFromFile(file, newFileName);
+        return mapper.toResponseDto(image);
     }
 
     private Image getProductImageFromFile(MultipartFile file, String newFileName) {
