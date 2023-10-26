@@ -4,7 +4,6 @@ import br.com.solutis.squad1.catalogservice.dto.image.ImageResponseDto;
 import br.com.solutis.squad1.catalogservice.dto.product.ProductPostDto;
 import br.com.solutis.squad1.catalogservice.dto.product.ProductPutDto;
 import br.com.solutis.squad1.catalogservice.dto.product.ProductResponseDto;
-import br.com.solutis.squad1.catalogservice.exception.ImageException;
 import br.com.solutis.squad1.catalogservice.service.ImageService;
 import br.com.solutis.squad1.catalogservice.service.ProductService;
 import jakarta.activation.MimetypesFileTypeMap;
@@ -37,13 +36,6 @@ public class ProductController {
         return productService.findAll(name, category, pageable);
     }
 
-    @GetMapping("/{id}")
-    public ProductResponseDto findById(
-            @PathVariable Long id
-    ) {
-        return productService.findById(id);
-    }
-
     @GetMapping("/sellers/{id}")
     public Page<ProductResponseDto> findBySellerId(
             @PathVariable Long id,
@@ -54,11 +46,16 @@ public class ProductController {
         return productService.findBySellerId(id, name, category, pageable);
     }
 
+    @GetMapping("/{id}")
+    public ProductResponseDto findById(
+            @PathVariable Long id
+    ) {
+        return productService.findById(id);
+    }
+
     @GetMapping("/images/{name}")
     public ResponseEntity<?> loadImage(@PathVariable String name) {
         Resource resource = imageService.load(name);
-
-        if (resource == null) throw new ImageException("Photo not found");
 
         // Pegar o tipo de conteúdo do arquivo
         MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();

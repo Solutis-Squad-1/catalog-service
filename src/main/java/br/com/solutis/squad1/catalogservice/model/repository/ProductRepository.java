@@ -1,8 +1,6 @@
 package br.com.solutis.squad1.catalogservice.model.repository;
 
 import br.com.solutis.squad1.catalogservice.model.entity.Product;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,12 +14,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(
             "SELECT p FROM Product p JOIN FETCH p.categories c WHERE p.deleted = false AND c.deleted = false AND p IN :products"
     )
-    List<Product> findProductCategories(@Param("products") List<Product> products);
+    List<Product> findProductsCategories(@Param("products") List<Product> products);
+
+    @Query(
+            "SELECT p FROM Product p JOIN FETCH p.image i WHERE p.deleted = false AND i.deleted = false AND p IN :products"
+    )
+    List<Product> findProductsImage(@Param("products") List<Product> products);
 
     @Query(
             "SELECT p FROM Product p JOIN FETCH p.categories c WHERE p.deleted = false AND c.deleted = false AND p.id = :id"
     )
-    Optional<Product> findByIdAndDeletedIsFalse(long id);
+    Optional<Product> findByIdAndDeletedIsFalse(@Param("id") Long id);
 
     @Modifying
     @Query(

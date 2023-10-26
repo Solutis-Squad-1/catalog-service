@@ -57,20 +57,21 @@ public class ProductRepositoryCustom {
         }
         if (categoryName != null) {
             Category category = findCategoryByName(categoryName);
-            if (category == null) {
-                throw new EntityNotFoundException("Category not found");
-            }
 
             typedQuery.setParameter("categoryId", category.getId());
         }
     }
 
     private Category findCategoryByName(String categoryName) {
-        String findCategoryByNameAndDeletedFalseStringQuery = "SELECT c FROM Category c WHERE c.name = :categoryName AND c.deleted = false";
-        TypedQuery<Category> findCategoryByNameAndDeletedFalseQuery = em.createQuery(findCategoryByNameAndDeletedFalseStringQuery, Category.class);
-        findCategoryByNameAndDeletedFalseQuery.setParameter("categoryName", categoryName);
+        try {
+            String findCategoryByNameAndDeletedFalseStringQuery = "SELECT c FROM Category c WHERE c.name = :categoryName AND c.deleted = false";
+            TypedQuery<Category> findCategoryByNameAndDeletedFalseQuery = em.createQuery(findCategoryByNameAndDeletedFalseStringQuery, Category.class);
+            findCategoryByNameAndDeletedFalseQuery.setParameter("categoryName", categoryName);
 
-        return findCategoryByNameAndDeletedFalseQuery.getSingleResult();
+            return findCategoryByNameAndDeletedFalseQuery.getSingleResult();
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Category not found");
+        }
     }
 
     private TypedQuery<Product> getFindAllBySellerIdQuery(String productName, String categoryName) {
@@ -89,6 +90,8 @@ public class ProductRepositoryCustom {
         if (productName != null) {
             query.append(" AND p.name LIKE CONCAT('%', :name, '%')");
         }
+
+        query.append(" ORDER BY p.id ASC");
 
         if (categoryName != null) {
             return em.createNativeQuery(query.toString(), Product.class).unwrap(TypedQuery.class);
@@ -113,6 +116,8 @@ public class ProductRepositoryCustom {
         if (productName != null) {
             query.append(" AND p.name LIKE CONCAT('%', :name, '%')");
         }
+
+        query.append(" ORDER BY p.id ASC");
 
         if (categoryName != null) {
             return em.createNativeQuery(query.toString(), Product.class).unwrap(TypedQuery.class);

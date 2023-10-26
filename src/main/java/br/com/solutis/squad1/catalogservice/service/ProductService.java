@@ -38,19 +38,23 @@ public class ProductService {
 
     public Page<ProductResponseDto> findAll(String productName, String categoryName, Pageable pageable) {
         LOGGER.info("Find all products with product name: {} and category name: {}", productName, categoryName);
+
         Page<Product> products = productRepositoryCustom
                 .findAllWithFilterAndDeletedFalse(productName, categoryName, pageable);
-        productRepository.findProductCategories(products.getContent());
-        // TODO: Colocar na memoria as imagens dos produtos
+        productRepository.findProductsCategories(products.getContent());
+        productRepository.findProductsImage(products.getContent());
+
         return products.map(mapper::toResponseDto);
     }
 
     public Page<ProductResponseDto> findBySellerId(Long id, String productName, String categoryName, Pageable pageable) {
         LOGGER.info("Find seller by id {} with category", id);
+
         Page<Product> products = productRepositoryCustom
                 .findAllWithFilterBySellerIdAndDeletedFalse(id, productName, categoryName, pageable);
-        productRepository.findProductCategories(products.getContent());
-        // TODO: Colocar na memoria as imagens dos produtos
+        productRepository.findProductsCategories(products.getContent());
+        productRepository.findProductsImage(products.getContent());
+
         return products.map(mapper::toResponseDto);
     }
 
