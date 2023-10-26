@@ -18,15 +18,17 @@ public class LoggerAspect {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggerAspect.class);
 
     @Pointcut("execution(public * br.com.solutis.squad1.catalogservice.*.*.*(..))")
-    public void methodsPointCut() {}
+    public void methodsPointCut() {
+    }
 
     @Pointcut(
             "@annotation(org.springframework.web.bind.annotation.GetMapping), " +
-            "@annotation(org.springframework.web.bind.annotation.PostMapping), " +
-            "@annotation(org.springframework.web.bind.annotation.PutMapping), " +
-            "@annotation(org.springframework.web.bind.annotation.DeleteMapping)"
+                    "@annotation(org.springframework.web.bind.annotation.PostMapping), " +
+                    "@annotation(org.springframework.web.bind.annotation.PutMapping), " +
+                    "@annotation(org.springframework.web.bind.annotation.DeleteMapping)"
     )
-    public void requestMappingPointCut() {}
+    public void requestMappingPointCut() {
+    }
 
     @Around("methodsPointCut()")
     public Object logMethodEntryAndExit(ProceedingJoinPoint joinPoint) throws Throwable {

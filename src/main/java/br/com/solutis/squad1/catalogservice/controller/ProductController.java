@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -31,10 +30,11 @@ public class ProductController {
 
     @GetMapping
     public Page<ProductResponseDto> findAll(
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) String category,
             Pageable pageable
     ) {
-        return productService.findAll(category, pageable);
+        return productService.findAll(name, category, pageable);
     }
 
     @GetMapping("/{id}")
@@ -44,21 +44,14 @@ public class ProductController {
         return productService.findById(id);
     }
 
-    @GetMapping("/search")
-    public Page<ProductResponseDto> findProductsByName(
-            @RequestParam String name,
-            Pageable pageable
-    ){
-        return productService.findProductsByName(name, pageable);
-    }
-
     @GetMapping("/sellers/{id}")
     public Page<ProductResponseDto> findBySellerId(
             @PathVariable Long id,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) String category,
             Pageable pageable
     ) {
-        return productService.findBySellerId(id, category, pageable);
+        return productService.findBySellerId(id, name, category, pageable);
     }
 
     @GetMapping("/images/{name}")
@@ -79,7 +72,7 @@ public class ProductController {
     }
 
     @GetMapping("/cart")
-    public List<ProductResponseDto> findProductsByUser(@RequestBody List<Long> productsId){
+    public List<ProductResponseDto> findProductsByUser(@RequestBody List<Long> productsId) {
         return productService.findProductsList(productsId);
     }
 

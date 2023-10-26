@@ -12,6 +12,7 @@ import br.com.solutis.squad1.catalogservice.model.entity.Image;
 import br.com.solutis.squad1.catalogservice.model.entity.Product;
 import br.com.solutis.squad1.catalogservice.model.repository.CategoryRepository;
 import br.com.solutis.squad1.catalogservice.model.repository.ProductRepository;
+import br.com.solutis.squad1.catalogservice.model.repository.ProductRepositoryCustom;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,48 +31,26 @@ import java.util.stream.Collectors;
 public class ProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
+    private final ProductRepositoryCustom productRepositoryCustom;
     private final CategoryRepository categoryRepository;
     private final ProductMapper mapper;
     private final CategoryMapper categoryMapper;
 
-    public Page<ProductResponseDto> findAll(String categoryName, Pageable pageable) {
-        LOGGER.info("Find all products");
-        if (categoryName == null) {
-            LOGGER.info("Find all products without category");
-            Page<Product> products = productRepository.findAllByDeletedFalse(pageable);
-            productRepository.findProductCategories(products.getContent());
-            return products.map(mapper::toResponseDto);
-        }
-
-        LOGGER.info("Find all products with category {}", categoryName);
-        Category category = categoryRepository.findByName(categoryName);
-        if (category == null) {
-            throw new EntityNotFoundException("Category not found");
-        }
-
-        Page<Product> products = productRepository.findAllByCategoryIdAndDeletedFalse(category.getId(), pageable);
+    public Page<ProductResponseDto> findAll(String productName, String categoryName, Pageable pageable) {
+        LOGGER.info("Find all products with product name: {} and category name: {}", productName, categoryName);
+        Page<Product> products = productRepositoryCustom
+                .findAllWithFilterAndDeletedFalse(productName, categoryName, pageable);
         productRepository.findProductCategories(products.getContent());
+        // TODO: Colocar na memoria as imagens dos produtos
         return products.map(mapper::toResponseDto);
     }
 
-    public Page<ProductResponseDto> findBySellerId(Long id, String categoryName, Pageable pageable) {
+    public Page<ProductResponseDto> findBySellerId(Long id, String productName, String categoryName, Pageable pageable) {
         LOGGER.info("Find seller by id {} with category", id);
-        if (categoryName == null) {
-            LOGGER.info("Find seller without category");
-            Page<Product> products = productRepository.findAllBySellerIdAndDeletedFalse(id, pageable);
-            productRepository.findProductCategories(products.getContent());
-            return products.map(mapper::toResponseDto);
-        }
-
-        LOGGER.info("Find all products with category {}", categoryName);
-        Category category = categoryRepository.findByName(categoryName);
-        if (category == null) {
-            throw new EntityNotFoundException("Category not found");
-        }
-
-        Page<Product> products = productRepository
-                .findAllBySellerIdAndCategoryIdAndDeletedFalse(id, category.getId(), pageable);
+        Page<Product> products = productRepositoryCustom
+                .findAllWithFilterBySellerIdAndDeletedFalse(id, productName, categoryName, pageable);
         productRepository.findProductCategories(products.getContent());
+        // TODO: Colocar na memoria as imagens dos produtos
         return products.map(mapper::toResponseDto);
     }
 
@@ -160,12 +139,6 @@ public class ProductService {
     private Set<Category> getCategories(List<Long> ids) {
         LOGGER.info("Find categories by ids {}", ids);
         return categoryRepository.findAllByListOfIdAndDeletedFalse(ids);
-    }
-
-    public Page<ProductResponseDto> findProductsByName(String name, Pageable pageable) {
-        LOGGER.info("Searching for products by name containing: {}", name);
-        Page<Product> products = productRepository.findProductsByName(name, pageable);
-        return products.map(mapper::toResponseDto);
     }
 
     public List<ProductResponseDto> findProductsList(List<Long> productsId) {

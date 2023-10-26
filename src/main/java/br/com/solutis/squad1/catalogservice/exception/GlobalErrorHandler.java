@@ -16,6 +16,7 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalErrorHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalErrorHandler.class);
+
     private static List<ErrorType> getErrors(List<FieldError> fieldErrors) {
         return fieldErrors
                 .stream()
