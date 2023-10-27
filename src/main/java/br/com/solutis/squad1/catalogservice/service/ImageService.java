@@ -1,8 +1,8 @@
 package br.com.solutis.squad1.catalogservice.service;
 
 import br.com.solutis.squad1.catalogservice.dto.image.ImageResponseDto;
+import br.com.solutis.squad1.catalogservice.exception.BadRequestException;
 import br.com.solutis.squad1.catalogservice.exception.EntityNotFoundException;
-import br.com.solutis.squad1.catalogservice.exception.ImageException;
 import br.com.solutis.squad1.catalogservice.mapper.ImageMapper;
 import br.com.solutis.squad1.catalogservice.model.entity.Image;
 import br.com.solutis.squad1.catalogservice.model.repository.ImageRepository;
@@ -104,7 +104,7 @@ public class ImageService {
             LOGGER.error("File not found: " + name);
             throw new FileNotFoundException("File not found: " + name);
         } catch (FileNotFoundException e) {
-            throw new ImageException(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         } catch (MalformedURLException e) {
             LOGGER.error("An error occurred while loading the file", e);
             throw new RuntimeException("An error occurred while loading the file", e);
@@ -115,7 +115,7 @@ public class ImageService {
         LOGGER.info("Uploading file with id {}", productId);
         // Valida se o arquivo é uma imagem
         if (!Objects.requireNonNull(file.getContentType()).startsWith("image/")) {
-            throw new ImageException("File must be an image");
+            throw new BadRequestException("File must be an image");
         }
 
         LOGGER.info("Uploading product image from product");
@@ -147,7 +147,7 @@ public class ImageService {
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             LOGGER.error("An error occurred while storing the file", e);
-            throw new ImageException("An error occurred while storing the file");
+            throw new RuntimeException("An error occurred while storing the file", e);
         }
     }
 
