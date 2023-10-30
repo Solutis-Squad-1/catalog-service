@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/catalog/products")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
