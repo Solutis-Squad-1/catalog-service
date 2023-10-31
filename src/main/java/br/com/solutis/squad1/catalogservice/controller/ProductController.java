@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,6 +76,7 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('product:create')")
     public ProductResponseDto save(
             @RequestBody ProductPostDto productPostDto
     ) {
@@ -83,6 +85,7 @@ public class ProductController {
 
     @PostMapping(path = "{productId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('product:create:image')")
     public ImageResponseDto uploadImage(
             @PathVariable Long productId,
             @RequestParam("file") MultipartFile file
@@ -91,6 +94,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('product:update')")
     public ProductResponseDto update(
             @PathVariable Long id,
             @RequestBody ProductPutDto productPutDto
@@ -100,6 +104,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('product:delete')")
     public void delete(
             @PathVariable Long id
     ) {
@@ -108,6 +113,7 @@ public class ProductController {
 
     @DeleteMapping("{productId}/images")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('product:delete:image')")
     public void deleteImage(
             @PathVariable Long productId
     ) {

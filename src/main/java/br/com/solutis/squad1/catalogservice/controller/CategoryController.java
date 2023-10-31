@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('category:read')")
     public Page<CategoryResponseDto> findAll(
             Pageable pageable
     ) {
@@ -23,6 +25,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('category:read')")
     public CategoryResponseDto findById(
             @PathVariable Long id
     ) {
@@ -31,6 +34,7 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('category:create')")
     public CategoryResponseDto save(
             @RequestBody CategoryDto categoryDto
     ) {
@@ -38,6 +42,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('category:update')")
     public CategoryResponseDto update(
             @PathVariable Long id,
             @RequestBody CategoryDto categoryDto
@@ -47,6 +52,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('category:delete')")
     public void delete(
             @PathVariable Long id
     ) {

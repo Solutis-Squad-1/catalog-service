@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,6 +72,18 @@ public class GlobalErrorHandler {
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 HttpStatus.BAD_REQUEST.value(),
                 List.of(new ErrorType("body", ex.getLocalizedMessage())),
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionResponse handleAccessDeniedException(AccessDeniedException ex) {
+        LOGGER.error("Access Denied", ex);
+        return new ExceptionResponse(
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                HttpStatus.FORBIDDEN.value(),
+                List.of(new ErrorType("body", ex.getMessage())),
                 LocalDateTime.now()
         );
     }
