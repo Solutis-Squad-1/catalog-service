@@ -17,7 +17,6 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('category:read')")
     public Page<CategoryResponseDto> findAll(
             Pageable pageable
     ) {
@@ -25,7 +24,6 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('category:read')")
     public CategoryResponseDto findById(
             @PathVariable Long id
     ) {
