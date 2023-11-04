@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class AuthorizationConfig {
     private static final String[] SWAGGER_AUTH_WHITELIST = {
             // -- Swagger UI v2
             "/v2/api-docs",
