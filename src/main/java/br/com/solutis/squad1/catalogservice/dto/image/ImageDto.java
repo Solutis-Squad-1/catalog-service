@@ -3,6 +3,9 @@ package br.com.solutis.squad1.catalogservice.dto.image;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Image DTO
+ */
 public record ImageDto(
 
         @NotBlank

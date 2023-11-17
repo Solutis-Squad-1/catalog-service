@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    /**
+     * Find all categories
+     *
+     * @param pageable
+     * @return Page<CategoryResponseDto>
+     */
     @GetMapping
     public Page<CategoryResponseDto> findAll(
             Pageable pageable
@@ -23,6 +29,12 @@ public class CategoryController {
         return categoryService.findAll(pageable);
     }
 
+    /**
+     * Find category by id
+     *
+     * @param id
+     * @return CategoryResponseDto
+     */
     @GetMapping("/{id}")
     public CategoryResponseDto findById(
             @PathVariable Long id
@@ -30,6 +42,12 @@ public class CategoryController {
         return categoryService.findById(id);
     }
 
+    /**
+     * Save category
+     *
+     * @param categoryDto
+     * @return CategoryResponseDto
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('category:create')")
@@ -39,6 +57,13 @@ public class CategoryController {
         return categoryService.save(categoryDto);
     }
 
+    /**
+     * Update category
+     *
+     * @param id
+     * @param categoryDto
+     * @return CategoryResponseDto
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('category:update')")
     public CategoryResponseDto update(
@@ -48,6 +73,11 @@ public class CategoryController {
         return categoryService.update(id, categoryDto);
     }
 
+    /**
+     * Delete category
+     *
+     * @param id
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('category:delete')")

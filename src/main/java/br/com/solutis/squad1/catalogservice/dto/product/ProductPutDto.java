@@ -5,6 +5,9 @@ import jakarta.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Product put DTO
+ */
 public record ProductPutDto(
         @Nullable
         String name,

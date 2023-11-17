@@ -2,6 +2,9 @@ package br.com.solutis.squad1.catalogservice.dto.image;
 
 import br.com.solutis.squad1.catalogservice.model.entity.Image;
 
+/**
+ * Image response DTO
+ */
 public record ImageResponseDto(
         Long id,
         String archiveName,

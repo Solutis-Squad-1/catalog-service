@@ -28,6 +28,14 @@ public class ProductController {
     private final ProductService productService;
     private final ImageService imageService;
 
+    /**
+     * Find all products
+     *
+     * @param name
+     * @param category
+     * @param pageable
+     * @return Page<ProductResponseDto>
+     */
     @GetMapping
     public Page<ProductResponseDto> findAll(
             @RequestParam(required = false) String name,
@@ -37,6 +45,15 @@ public class ProductController {
         return productService.findAll(name, category, pageable);
     }
 
+    /**
+     * Find products by seller id
+     *
+     * @param id
+     * @param name
+     * @param category
+     * @param pageable
+     * @return Page<ProductResponseDto>
+     */
     @GetMapping("/sellers/{id}")
     public Page<ProductResponseDto> findBySellerId(
             @PathVariable Long id,
@@ -47,6 +64,12 @@ public class ProductController {
         return productService.findBySellerId(id, name, category, pageable);
     }
 
+    /**
+     * Find product by id
+     *
+     * @param id
+     * @return ProductResponseDto
+     */
     @GetMapping("/{id}")
     public ProductResponseDto findById(
             @PathVariable Long id
@@ -54,6 +77,12 @@ public class ProductController {
         return productService.findById(id);
     }
 
+    /**
+     * Load image by product name
+     *
+     * @param name
+     * @return ResponseEntity<?>
+     */
     @GetMapping("/images/{name}")
     public ResponseEntity<?> loadImage(@PathVariable String name) {
         Resource resource = imageService.load(name);
@@ -69,11 +98,23 @@ public class ProductController {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
+    /**
+     * Find products by list of ids
+     *
+     * @param productsId
+     * @return List<ProductResponseDto>
+     */
     @GetMapping("/cart")
     public List<ProductResponseDto> findProductsByUser(@RequestBody List<Long> productsId) {
         return productService.findProductsList(productsId);
     }
 
+    /**
+     * Save product
+     *
+     * @param productPostDto
+     * @return ProductResponseDto
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('product:create')")
@@ -83,6 +124,13 @@ public class ProductController {
         return productService.save(productPostDto);
     }
 
+    /**
+     * Upload image to product
+     *
+     * @param productId
+     * @param file
+     * @return ImageResponseDto
+     */
     @PostMapping(path = "{productId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('product:create:image')")
@@ -93,6 +141,13 @@ public class ProductController {
         return imageService.save(productId, file);
     }
 
+    /**
+     * Update product
+     *
+     * @param id
+     * @param productPutDto
+     * @return ProductResponseDto
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('product:update')")
     public ProductResponseDto update(
@@ -102,6 +157,11 @@ public class ProductController {
         return productService.update(id, productPutDto);
     }
 
+    /**
+     * Delete product
+     *
+     * @param id
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('product:delete')")
@@ -111,6 +171,11 @@ public class ProductController {
         productService.delete(id);
     }
 
+    /**
+     * Delete image from product
+     *
+     * @param productId
+     */
     @DeleteMapping("{productId}/images")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('product:delete:image')")

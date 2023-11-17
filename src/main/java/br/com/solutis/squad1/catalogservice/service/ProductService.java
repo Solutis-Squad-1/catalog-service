@@ -36,6 +36,14 @@ public class ProductService {
     private final ProductMapper mapper;
     private final CategoryMapper categoryMapper;
 
+    /**
+     * Find all products
+     *
+     * @param productName
+     * @param categoryName
+     * @param pageable
+     * @return Page<ProductResponseDto>
+     */
     public Page<ProductResponseDto> findAll(String productName, String categoryName, Pageable pageable) {
         LOGGER.info("Find all products with product name: {} and category name: {}", productName, categoryName);
 
@@ -47,6 +55,15 @@ public class ProductService {
         return products.map(mapper::toResponseDto);
     }
 
+    /**
+     * Find all products by seller id
+     *
+     * @param id
+     * @param productName
+     * @param categoryName
+     * @param pageable
+     * @return Page<ProductResponseDto>
+     */
     public Page<ProductResponseDto> findBySellerId(Long id, String productName, String categoryName, Pageable pageable) {
         LOGGER.info("Find seller by id {} with category", id);
 
@@ -58,6 +75,12 @@ public class ProductService {
         return products.map(mapper::toResponseDto);
     }
 
+    /**
+     * Find product by id
+     *
+     * @param id
+     * @return ProductResponseDto
+     */
     public ProductResponseDto findById(Long id) {
         LOGGER.info("Find product by id {}", id);
         Product product = productRepository.findByIdAndDeletedIsFalse(id)
@@ -66,6 +89,12 @@ public class ProductService {
         return mapper.toResponseDto(product);
     }
 
+    /**
+     * Save product
+     *
+     * @param productPostDto
+     * @return ProductResponseDto
+     */
     public ProductResponseDto save(ProductPostDto productPostDto) {
         LOGGER.info("Saving product {}", productPostDto);
         Product product = mapper.postDtoToEntity(productPostDto);
@@ -90,6 +119,13 @@ public class ProductService {
         return new ProductResponseDto(product, categoriesResponse);
     }
 
+    /**
+     * Update product
+     *
+     * @param id
+     * @param productPutDto
+     * @return ProductResponseDto
+     */
     public ProductResponseDto update(Long id, ProductPutDto productPutDto) {
         LOGGER.info("Updating product with id {}", id);
         Product product = productRepository.getReferenceById(id);
@@ -120,6 +156,11 @@ public class ProductService {
         return new ProductResponseDto(product, categoriesResponse);
     }
 
+    /**
+     * Delete product
+     *
+     * @param id
+     */
     public void delete(Long id) {
         LOGGER.info("Deleting product with id {}", id);
         Product product = productRepository.getReferenceById(id);
@@ -127,6 +168,12 @@ public class ProductService {
         LOGGER.info("Product deleted");
     }
 
+    /**
+     * Save product image
+     *
+     * @param productId
+     * @param image
+     */
     public void saveImage(Long productId, Image image) {
         LOGGER.info("Save product image for product with id {}", productId);
         Product product = productRepository.getReferenceById(productId);
@@ -134,6 +181,11 @@ public class ProductService {
         LOGGER.info("Product image saved");
     }
 
+    /**
+     * Delete product image
+     *
+     * @param id
+     */
     public void deleteImage(Long id) {
         LOGGER.info("Deleting product image with id {}", id);
         Product product = productRepository.getReferenceById(id);
@@ -145,6 +197,12 @@ public class ProductService {
         return categoryRepository.findAllByListOfIdAndDeletedFalse(ids);
     }
 
+    /**
+     * Find products list
+     *
+     * @param productsId
+     * @return List<ProductResponseDto>
+     */
     public List<ProductResponseDto> findProductsList(List<Long> productsId) {
         LOGGER.info("Find products list with id: {}", productsId);
         List<Product> products = productRepository.findAllById(productsId);

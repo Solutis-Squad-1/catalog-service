@@ -18,6 +18,14 @@ public class ProductRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
+    /**
+     * Find all products when deleted is false with pagination
+     *
+     * @param productName
+     * @param categoryName
+     * @param pageable
+     * @return Page<Product>
+     */
     public Page<Product> findAllWithFilterAndDeletedFalse(String productName, String categoryName, Pageable pageable) {
         TypedQuery<Product> typedQuery = getFindAllQuery(productName, categoryName);
 
@@ -29,6 +37,15 @@ public class ProductRepositoryCustom {
         return new PageImpl<>(resultList, pageable, resultList.size());
     }
 
+    /**
+     * Find all products when deleted is false with pagination and filter by seller id
+     *
+     * @param sellerId
+     * @param productName
+     * @param categoryName
+     * @param pageable
+     * @return Page<Product>
+     */
     public Page<Product> findAllWithFilterBySellerIdAndDeletedFalse(
             Long sellerId,
             String productName,

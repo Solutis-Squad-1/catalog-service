@@ -11,14 +11,29 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+    /**
+     * Find all categories that are not deleted
+     *
+     * @return Page<Category>
+     */
     Page<Category> findAllByDeletedFalse(Pageable pageable);
 
+    /**
+     * Find category by id
+     *
+     * @param id
+     * @return Optional<Category>
+     */
     Optional<Category> findByIdAndDeletedIsFalse(long id);
 
+    /**
+     * Find all categories by list of ids
+     *
+     * @param ids
+     * @return Set<Category>
+     */
     @Query(
             "SELECT c FROM Category c WHERE c.id IN :ids AND c.deleted = false"
     )
     Set<Category> findAllByListOfIdAndDeletedFalse(List<Long> ids);
-
-    Category findByName(String category);
 }

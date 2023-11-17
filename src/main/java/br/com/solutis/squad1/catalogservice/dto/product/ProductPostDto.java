@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Product post DTO
+ */
 public record ProductPostDto(
         @NotBlank
         @Min(value = 3, message = "Name must be at least 3 characters long")

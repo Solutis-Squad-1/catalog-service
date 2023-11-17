@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.math.BigDecimal;
 import java.util.Set;
 
+/**
+ * Product response DTO
+ */
 public record ProductResponseDto(
         Long id,
         String name,
