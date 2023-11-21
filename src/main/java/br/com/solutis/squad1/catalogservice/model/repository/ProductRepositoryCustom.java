@@ -13,6 +13,28 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Custom repository for handling custom queries related to the {@link Product} entity.
+
+ * This repository provides methods for querying products with specific criteria, such as product name, category name,
+ * seller ID, and pagination. It interacts with the JPA EntityManager to execute native and JPQL queries.
+ *
+ * The class is annotated with Spring's {@link Repository} to indicate that it is a repository component in the Spring Data context.
+ * It is designed to work in conjunction with the standard {@link org.springframework.data.repository.CrudRepository} for the {@link Product} entity.
+ *
+ * Methods:
+ * - {@link #findAllWithFilterAndDeletedFalse(String, String, Pageable)}: Find all products when deleted is false with pagination.
+ * - {@link #findAllWithFilterBySellerIdAndDeletedFalse(Long, String, String, Pageable)}: Find all products when deleted is false with pagination and filter by seller ID.
+ *
+ * Private methods:
+ * - {@link #setPagination(Pageable, TypedQuery)}: Set pagination parameters for the query.
+ * - {@link #setQueryParameter(String, String, TypedQuery)}: Set query parameters based on optional filters (product name, category name).
+ * - {@link #findCategoryByName(String)}: Find a category by name. This method is used internally for filtering by category name.
+ * - {@link #getFindAllBySellerIdQuery(String, String)}: Construct a native query for finding products by seller ID.
+ * - {@link #getFindAllQuery(String, String)}: Construct a query for finding all products with optional filters.
+ *
+ * The class uses the JPA {@link PersistenceContext} annotation to inject the EntityManager, allowing it to interact with the database.
+ */
 @Repository
 public class ProductRepositoryCustom {
     @PersistenceContext

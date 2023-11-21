@@ -25,6 +25,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Service class that provides business logic for product-related operations.
+ *
+ * This service handles operations such as retrieving, creating, updating, and deleting products. It also manages
+ * product images, including saving and deleting images associated with a product.
+ *
+ * All operations are transactional, ensuring data consistency and integrity.
+ *
+ * This service interacts with the {@link ProductRepository} and {@link ProductRepositoryCustom} for database access,
+ * {@link CategoryRepository} for category-related operations, {@link ProductMapper} for mapping between DTOs and entities,
+ * and {@link CategoryMapper} for category-related mapping.
+ *
+ * @Service Indicates that this class is a Spring service bean.
+ * @Transactional Specifies that the methods of this service are transactional.
+ * @RequiredArgsConstructor Lombok annotation that generates a constructor with required fields.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor

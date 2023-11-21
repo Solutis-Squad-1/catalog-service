@@ -10,6 +10,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * JPA Repository for the {@link Category} entity.
+ *
+ * This repository extends the {@link JpaRepository} interface provided by Spring Data JPA, offering standard CRUD operations
+ * for the {@link Category} entity. Additionally, it defines custom queries using the JPA {@link Query} annotation to fetch
+ * categories based on different criteria.
+ *
+ * The repository uses the JPA {@link Query} annotation to define JPQL queries for retrieving categories based on different
+ * criteria. These queries ensure that only non-deleted categories are retrieved.
+ */
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     /**
      * Find all categories that are not deleted

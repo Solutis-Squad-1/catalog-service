@@ -27,6 +27,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Service class that provides business logic for image-related operations.
+ *
+ * This service handles operations such as retrieving, saving, updating, and deleting images.
+ *
+ * All operations are transactional, ensuring data consistency and integrity.
+ *
+ * This service interacts with the {@link ImageRepository} for database access,
+ * {@link ProductService} for handling product-related operations, and {@link ImageMapper} for mapping between DTOs and entities.
+ *
+ * @Service Indicates that this class is a Spring service bean.
+ * @Transactional Specifies that the methods of this service are transactional.
+ * @RequiredArgsConstructor Lombok annotation that generates a constructor with required fields.
+ * @Slf4j Lombok annotation that generates a logger field for logging.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor

@@ -9,7 +9,16 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
+/**
+ * JPA Repository for the {@link Product} entity.
+ *
+ * This repository extends the {@link JpaRepository} interface provided by Spring Data JPA, offering standard CRUD operations
+ * for the {@link Product} entity. Additionally, it defines custom queries using the JPA {@link Query} annotation to fetch
+ * related entities such as categories and images.
+ *
+ * The {@link Modifying} annotation is used in conjunction with the {@link Query} annotation for queries that modify the database,
+ * indicating that the query modifies the state of the database and should be executed as an update or delete operation.
+ */
 public interface ProductRepository extends JpaRepository<Product, Long> {
     /**
      * Find all categories from product
