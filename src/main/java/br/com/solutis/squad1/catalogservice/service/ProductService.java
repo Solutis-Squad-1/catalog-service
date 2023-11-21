@@ -178,6 +178,7 @@ public class ProductService {
         LOGGER.info("Save product image for product with id {}", productId);
         Product product = productRepository.getReferenceById(productId);
         product.setImage(image);
+        productRepository.save(product);
         LOGGER.info("Product image saved");
     }
 
@@ -190,6 +191,7 @@ public class ProductService {
         LOGGER.info("Deleting product image with id {}", id);
         Product product = productRepository.getReferenceById(id);
         product.setImage(null);
+        productRepository.save(product);
     }
 
     private Set<Category> getCategories(List<Long> ids) {

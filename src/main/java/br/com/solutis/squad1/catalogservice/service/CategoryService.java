@@ -29,8 +29,8 @@ public class CategoryService {
      */
     public Page<CategoryResponseDto> findAll(Pageable pageable) {
         log.info("Find all categories");
-        return categoryRepository.findAllByDeletedFalse(pageable)
-                .map(mapper::toResponseDto);
+        Page<Category> categories = categoryRepository.findAllByDeletedFalse(pageable);
+        return categories != null ? categories.map(mapper::toResponseDto) : Page.empty();
     }
 
     /**
