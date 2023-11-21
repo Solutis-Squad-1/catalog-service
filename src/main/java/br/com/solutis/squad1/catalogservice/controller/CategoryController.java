@@ -3,6 +3,7 @@ package br.com.solutis.squad1.catalogservice.controller;
 import br.com.solutis.squad1.catalogservice.dto.category.CategoryDto;
 import br.com.solutis.squad1.catalogservice.dto.category.CategoryResponseDto;
 import br.com.solutis.squad1.catalogservice.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ public class CategoryController {
      * @param pageable
      * @return Page<CategoryResponseDto>
      */
+    @Operation(summary = "Find all categories")
     @GetMapping
     public Page<CategoryResponseDto> findAll(
             Pageable pageable
@@ -35,6 +37,7 @@ public class CategoryController {
      * @param id
      * @return CategoryResponseDto
      */
+    @Operation(summary = "Find category by id")
     @GetMapping("/{id}")
     public CategoryResponseDto findById(
             @PathVariable Long id
@@ -48,6 +51,7 @@ public class CategoryController {
      * @param categoryDto
      * @return CategoryResponseDto
      */
+    @Operation(summary = "Save category")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('category:create')")
@@ -64,6 +68,7 @@ public class CategoryController {
      * @param categoryDto
      * @return CategoryResponseDto
      */
+    @Operation(summary = "Update category")
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('category:update')")
     public CategoryResponseDto update(
@@ -78,6 +83,7 @@ public class CategoryController {
      *
      * @param id
      */
+    @Operation(summary = "Delete category")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('category:delete')")

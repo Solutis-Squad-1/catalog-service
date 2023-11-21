@@ -6,6 +6,7 @@ import br.com.solutis.squad1.catalogservice.dto.product.ProductPutDto;
 import br.com.solutis.squad1.catalogservice.dto.product.ProductResponseDto;
 import br.com.solutis.squad1.catalogservice.service.ImageService;
 import br.com.solutis.squad1.catalogservice.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.activation.MimetypesFileTypeMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -36,6 +37,7 @@ public class ProductController {
      * @param pageable
      * @return Page<ProductResponseDto>
      */
+    @Operation(summary = "Find all products")
     @GetMapping
     public Page<ProductResponseDto> findAll(
             @RequestParam(required = false) String name,
@@ -54,6 +56,7 @@ public class ProductController {
      * @param pageable
      * @return Page<ProductResponseDto>
      */
+    @Operation(summary = "Find products by seller id")
     @GetMapping("/sellers/{id}")
     public Page<ProductResponseDto> findBySellerId(
             @PathVariable Long id,
@@ -70,6 +73,7 @@ public class ProductController {
      * @param id
      * @return ProductResponseDto
      */
+    @Operation(summary = "Find product by id")
     @GetMapping("/{id}")
     public ProductResponseDto findById(
             @PathVariable Long id
@@ -83,6 +87,7 @@ public class ProductController {
      * @param name
      * @return ResponseEntity<?>
      */
+    @Operation(summary = "Load image by product name")
     @GetMapping("/images/{name}")
     public ResponseEntity<?> loadImage(@PathVariable String name) {
         Resource resource = imageService.load(name);
@@ -104,6 +109,7 @@ public class ProductController {
      * @param productsId
      * @return List<ProductResponseDto>
      */
+    @Operation(summary = "Find products by list of ids")
     @GetMapping("/cart")
     public List<ProductResponseDto> findProductsByUser(@RequestBody List<Long> productsId) {
         return productService.findProductsList(productsId);
@@ -115,6 +121,7 @@ public class ProductController {
      * @param productPostDto
      * @return ProductResponseDto
      */
+    @Operation(summary = "Save product")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('product:create')")
@@ -131,6 +138,7 @@ public class ProductController {
      * @param file
      * @return ImageResponseDto
      */
+    @Operation(summary = "Upload image to product")
     @PostMapping(path = "{productId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('product:create:image')")
@@ -148,6 +156,7 @@ public class ProductController {
      * @param productPutDto
      * @return ProductResponseDto
      */
+    @Operation(summary = "Update product")
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('product:update')")
     public ProductResponseDto update(
@@ -162,6 +171,7 @@ public class ProductController {
      *
      * @param id
      */
+    @Operation(summary = "Delete product")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('product:delete')")
@@ -176,6 +186,7 @@ public class ProductController {
      *
      * @param productId
      */
+    @Operation(summary = "Delete image from product")
     @DeleteMapping("{productId}/images")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('product:delete:image')")
